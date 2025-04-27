@@ -15,6 +15,7 @@ import {
   Label,
 } from "@/components/ui"
 import Link from "next/link"
+import { useToast } from "@/hooks/use-toast";
 import { Logo } from "@/components/logo"
 
 // Custom icon components
@@ -53,6 +54,7 @@ function MicrosoftIcon(props: React.SVGProps<SVGSVGElement>) {
 }
 
 export default function LoginPage() {
+  const { toast } = useToast();
   const router = useRouter()
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
@@ -75,6 +77,11 @@ export default function LoginPage() {
         // should use state management later
         localStorage.setItem("token", data.token) // Store token in local storage
         localStorage.setItem("user", JSON.stringify(data.user)) // Store user data in local storage
+        toast({
+          title: "Login successful",
+          description: "Welcome back!",
+          duration: 3000,
+        })
         router.push("/dashboard/assignments") // Redirect to dashboard
       } else if (res.status === 401) {
         setError("Invalid email or password.")
@@ -159,7 +166,7 @@ export default function LoginPage() {
             <CardDescription className="text-center">Enter your credentials to access your dashboard</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
-            <div className="grid grid-cols-2 gap-4">
+            {/* <div className="grid grid-cols-2 gap-4">
               <Button variant="outline" className="w-full">
                 <GoogleIcon className="mr-2 h-5 w-5 text-[#4285F4]" />
                 Google
@@ -168,15 +175,15 @@ export default function LoginPage() {
                 <MicrosoftIcon className="mr-2 h-5 w-5 text-[#00A4EF]" />
                 Microsoft
               </Button>
-            </div>
-            <div className="relative">
+            </div> */}
+            {/* <div className="relative">
               <div className="absolute inset-0 flex items-center">
                 <span className="w-full border-t"></span>
               </div>
               <div className="relative flex justify-center text-xs uppercase">
                 <span className="bg-card px-2 text-muted-foreground">Or continue with</span>
               </div>
-            </div>
+            </div> */}
             <div className="space-y-2">
               <Label htmlFor="email">Email</Label>
               <Input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="m@example.com" />

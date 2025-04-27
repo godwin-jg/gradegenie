@@ -21,6 +21,7 @@ import {
   BookOpen,
   ShieldCheck,
 } from "lucide-react"
+import { useToast } from "@/hooks/use-toast";
 import { Logo } from "@/components/logo"
 import { set } from "date-fns"
 
@@ -60,6 +61,7 @@ function MicrosoftIcon(props: React.SVGProps<SVGSVGElement>) {
 }
 
 export default function SignupPage() {
+  const { toast } = useToast();
   const [step, setStep] = useState(1)
   const [email, setEmail] = useState("")
   const [name, setName] = useState("")
@@ -302,7 +304,7 @@ export default function SignupPage() {
           <CardContent className="space-y-4">
             {step === 1 ? (
               <form onSubmit={handleContinue} className="space-y-4">
-                <div className="grid grid-cols-2 gap-4">
+                {/* <div className="grid grid-cols-2 gap-4">
                   <Button variant="outline" className="w-full">
                     <GoogleIcon className="mr-2 h-5 w-5" />
                     Google
@@ -311,16 +313,16 @@ export default function SignupPage() {
                     <MicrosoftIcon className="mr-2 h-5 w-5" />
                     Microsoft
                   </Button>
-                </div>
+                </div> */}
 
-                <div className="relative">
+                {/* <div className="relative">
                   <div className="absolute inset-0 flex items-center">
                     <span className="w-full border-t"></span>
                   </div>
                   <div className="relative flex justify-center text-xs uppercase">
                     <span className="bg-card px-2 text-muted-foreground">Or continue with</span>
                   </div>
-                </div>
+                </div> */}
 
                 <div className="space-y-4">
                   <div className="space-y-2">
@@ -586,12 +588,21 @@ export default function SignupPage() {
                 </div>
 
                 <div className="flex flex-col space-y-2">
-                  <Button className="w-full py-6 text-base" asChild>
-                    <Link href="/dashboard/assignments">
+                    <Button
+                    className="w-full py-6 text-base"
+                    asChild
+                    onClick={() =>
+                      toast({
+                      title: "Success",
+                      description: "Please Login to continue",
+                      })
+                    }
+                    >
+                    <Link href="/login">
                       <CreditCard className="mr-2 h-4 w-4" />
                       Activate Your Trial — Secure & No Charges Today
                     </Link>
-                  </Button>
+                    </Button>
 
                   <Button variant="ghost" onClick={handleBack} className="mt-2">
                     <ArrowLeft className="mr-2 h-4 w-4" />

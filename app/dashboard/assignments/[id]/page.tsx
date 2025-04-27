@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import { Download, Eye, Share2, Edit, AlertTriangle, Loader2, Clock, CalendarDays } from "lucide-react"; // Import icons
+import { Download, Eye, Share2, Edit, AlertTriangle, Loader2, Clock, CalendarDays, Trash2 } from "lucide-react"; // Import icons
 import { FileUpload } from "@/components/file-upload"; // Assuming this component handles file selection/upload trigger
 import {
   Dialog,
@@ -223,6 +223,54 @@ const handleUploadComplete = async (files: File[], images: string[]) => {
     router.push(`/dashboard/assignments/${assignmentId}/edit`);
   };
 
+  const handleDeleteSubmission = async (submission: Submission) => {
+    const token = localStorage.getItem('token'); // Use your consistent token key
+    if (!token) {
+        toast({ title: "Error", description: "Authentication required.", variant: "destructive" });
+        return;
+    }
+    if (!submission) return;
+    console.log(`Deleting submission ${submission}...`);
+    const confirmation = confirm(`Are you sure you want to delete the submission from ${submission.studentName || 'this student'}?`);
+    if (confirmation) {
+      try {
+          const token = localStorage.getItem('token');
+          if (!token) {
+            toast({ title: "Error", description: "Authentication required.", variant: "destructive" });
+            return;
+          }
+          const apiUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:5000/api';
+          const response = await fetch(`${apiUrl}/submissions/${submission._id}`, {
+            method: 'DELETE',
+            headers: {
+            'Authorization': `Bearer ${token}`,
+            },
+          });
+
+          if (response.ok) {
+            toast({ title: "Success", description: "Submission deleted successfully." });
+            fetchAssignmentDetails(); // Refresh the list
+          } else {
+            const errorData = await response.json();
+            toast({
+            title: "Error",
+            description: errorData.message || "Failed to delete submission.",
+            variant: "destructive",
+            });
+          }
+          } catch (err) {
+          toast({
+            title: "Network Error",
+            description: "Could not delete submission.",
+            variant: "destructive",
+          });
+          console.error("Error deleting submission:", err);
+          }
+        }
+      }
+
+
+
   const handleAssignName = async () => {
     if (!selectedSubmission) return;
 
@@ -399,23 +447,18 @@ const handleUploadComplete = async (files: File[], images: string[]) => {
                      <AvatarImage src={`/placeholder-user.jpg`} alt={submission.studentName || 'Student'} />
                     <AvatarFallback>{getInitials(submission.studentName)}</AvatarFallback>
                   </Avatar>
-                  <div>
-                    {submission.studentName ? (
-                      <p className="font-medium">{submission.studentName}</p>
-                    ) : (
-                      // Button to assign name if missing
-                      <Button
-                        variant="link"
-                        className="p-0 h-auto font-medium text-primary hover:underline" // Use primary color
-                        onClick={() => openAssignNameDialog(submission)}
-                      >
-                        Assign Student Name
-                      </Button>
-                    )}
+                    <div>
+                    <Button
+                      variant="link"
+                      className="p-0 h-auto font-medium text-primary hover:underline" // Use primary color
+                      onClick={() => openAssignNameDialog(submission)}
+                    >
+                      {submission.studentName || "Assign Student Name"}
+                    </Button>
                     <p className="text-sm text-muted-foreground">
                       Submitted: {formatDate(submission.submissionDate)}
                     </p>
-                  </div>
+                    </div>
                 </div>
 
                 {/* Status & Actions */}
@@ -439,14 +482,25 @@ const handleUploadComplete = async (files: File[], images: string[]) => {
                      {/* TODO: Implement Download functionality (needs fileUrl) */}
                      <Button variant="outline" size="icon" asChild title="Download" disabled={!submission.fileUrl}>
                        <Link href={submission.fileUrl || '#'} target="_blank" rel="noopener noreferrer">
-                         <Download className="h-4 w-4" />
+                       <Download className="h-4 w-4" />
                        </Link>
                      </Button>
                      {/* Link to Review Page */}
-                     <Button variant="outline" size="icon" asChild title="Review">
+                     <Button variant="outline" asChild title="Review">
                        <Link href={`/dashboard/assignments/${assignmentId}/submissions/${submission._id}`}>
-                         <Eye className="h-4 w-4" />
+                       <Eye className="mr-2 h-4 w-4" />
+                       Review
                        </Link>
+                     </Button>
+                     <Button
+                       variant="outline"
+                       size="icon"
+                       title="Delete"
+                       onClick={() => handleDeleteSubmission(submission)}
+                       disabled={submission.status === "graded"} // Disable if graded
+                       className="text-red-500 hover:bg-red-100 focus:bg-red-100 focus:ring-red-500" 
+                     >
+                       <Trash2 className="h-4 w-4 text-red-500" />
                      </Button>
                    </div>
                 </div>

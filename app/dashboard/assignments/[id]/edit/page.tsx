@@ -85,9 +85,9 @@ export default function EditAssignmentPage() {
 
     try {
         const apiUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:5000/api';
-        console.log(`Saving assignment changes to: ${apiUrl}/assignment/edit/${assignmentId}`);
+        console.log(`Saving assignment changes to: ${apiUrl}/assignment/${assignmentId}/edit`);
 
-        const response = await fetch(`${apiUrl}/assignment/edit/${assignmentId}`, { // Corrected endpoint
+        const response = await fetch(`${apiUrl}/assignment/${assignmentId}/edit`, { // Corrected endpoint
             method: 'GET',
             headers: {
                 'Authorization': `Bearer ${token}`,
@@ -209,9 +209,9 @@ export default function EditAssignmentPage() {
 
     try {
         const apiUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:5000/api';
-        console.log(`Saving assignment changes to: ${apiUrl}/assignment/edit${assignmentId}`);
+        console.log(`Saving assignment changes to: ${apiUrl}/assignment/${assignmentId}/edit`);
 
-        const response = await fetch(`${apiUrl}/assignment/edit${assignmentId}`, { // Corrected endpoint
+        const response = await fetch(`${apiUrl}/assignment/${assignmentId}/edit`, { // Corrected endpoint
             method: 'PUT',
             headers: {
                 'Authorization': `Bearer ${token}`,
