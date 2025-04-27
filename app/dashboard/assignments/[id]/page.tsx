@@ -497,7 +497,6 @@ const handleUploadComplete = async (files: File[], images: string[]) => {
                        size="icon"
                        title="Delete"
                        onClick={() => handleDeleteSubmission(submission)}
-                       disabled={submission.status === "graded"} // Disable if graded
                        className="text-red-500 hover:bg-red-100 focus:bg-red-100 focus:ring-red-500" 
                      >
                        <Trash2 className="h-4 w-4 text-red-500" />
