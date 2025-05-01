@@ -91,8 +91,8 @@ export default function SignupPage() {
     if (step === 2) {
       try {
         console.log("Form submitted with values:", { email, name, password, billingCycle, selectedPlan })
-        const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api/"
-        const response = await fetch(`${apiUrl}auth/register`, {
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api"
+        const response = await fetch(`${apiUrl}/auth/register`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ name, email, password, selectedPlan, billingCycle }),
